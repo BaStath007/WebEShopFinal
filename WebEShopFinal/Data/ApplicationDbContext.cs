@@ -9,7 +9,7 @@ namespace WebEShopFinal.Data
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-
+            //options = new DbContextOptionsBuilder<ApplicationDbContext>().UseSqlServer(@Server = )
         }
 
         public virtual DbSet<ApplicationUser> Users { get; set; }

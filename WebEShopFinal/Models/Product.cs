@@ -8,7 +8,7 @@ using System.Web;
 namespace WebEShopFinal.Models
 {
     public class Product
-    {
+    {        
         public int Id { get; set; } // Id (Primary key)
         [Required]
         [MinLength(8, ErrorMessage = "Title should be at least 8 characters"), MaxLength(25, ErrorMessage = "Title can not be more than 25 characters")]

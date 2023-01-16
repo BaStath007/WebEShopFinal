@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using WebEShopFinal.Data;
 using WebEShopFinal.Models;
+using WebEShopFinal.API;
+using WebEShopFinal.Repositories;
 
 namespace WebEShopFinal
 {
@@ -22,6 +24,10 @@ namespace WebEShopFinal
             builder.Services.AddRazorPages();
             builder.Services.AddMvc();
             builder.Services.AddControllersWithViews();
+            builder.Services.AddEndpointsApiExplorer();
+
+            builder.Services.AddSwaggerGen();
+            builder.Services.AddScoped<IGenericRepository<Category>, CategoriesRepository>();
 
             var app = builder.Build();
 
@@ -37,17 +43,26 @@ namespace WebEShopFinal
                 app.UseHsts();
             }
 
+                        if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
+
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
             app.UseRouting();
+            
 
             app.UseAuthentication();
             app.UseAuthorization();
 
             app.MapRazorPages();
             app.MapDefaultControllerRoute();
+            app.MapGet("/api/koukou", () => { return "This is Koukou!!!"; });
 
+                        app.MapCategoryEndpoints();
             app.Run();
         }
     }

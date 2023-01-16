@@ -7,34 +7,38 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebEShopFinal.Data;
 using WebEShopFinal.Models;
+using WebEShopFinal.Repositories;
 
 namespace WebEShopFinal.Controllers
 {
     public class CategoriesController : Controller
     {
-        private readonly ApplicationDbContext _context;
-
+        private ApplicationDbContext _context;
+        private IGenericRepository<Category> _categoriesRepository;
         public CategoriesController(ApplicationDbContext context)
         {
             _context = context;
+        }
+        public CategoriesController(IGenericRepository<Category> categoryRepository)
+        {            
+            _categoriesRepository = categoryRepository;
         }
 
         // GET: Categories
         public async Task<IActionResult> Index()
         {
-              return View(await _context.Categories.ToListAsync());
+              return View(await _categoriesRepository.GetAll());
         }
 
         // GET: Categories/Details/5
         public async Task<IActionResult> Details(int? id)
         {
-            if (id == null || _context.Categories == null)
+            if (id == null || _categoriesRepository.GetAll() == null)
             {
                 return NotFound();
             }
 
-            var category = await _context.Categories
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var category = await _categoriesRepository.Get(id);
             if (category == null)
             {
                 return NotFound();
@@ -58,7 +62,7 @@ namespace WebEShopFinal.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(category);
+                _categoriesRepository.Add(category);                
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
@@ -97,7 +101,7 @@ namespace WebEShopFinal.Controllers
             {
                 try
                 {
-                    _context.Update(category);
+                    _categoriesRepository.Update(category);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
